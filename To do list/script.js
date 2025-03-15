@@ -11,8 +11,29 @@ form.addEventListener('submit', (event) => {
         return;
     }
     const li = document.createElement('li');
-    li.textContent = taskTitle;
+    const inputCheckbox = document.createElement('input');
+    inputCheckbox.setAttribute('type', 'checkbox');
+    inputCheckbox.addEventListener('change', (event) => {
+        const liToogle = (event.target.parentElement);
+        const spanToogle = liToogle.querySelector('span');
+        const done = event.target.checked;
+        if (!done) {
+            spanToogle.style.textDecoration = 'none';
+        } else {
+            spanToogle.style.textDecoration = 'line-through';
+        }
+    })
+    const span = document.createElement('span');
+    span.textContent = taskTitle;
+    const button = document.createElement('button');
+    button.textContent = 'Remover';
+    button.addEventListener('click', (event) => {
+        ul.removeChild(event.target.parentElement)
+    })
+    li.appendChild(inputCheckbox);
+    li.appendChild(span);
+    li.appendChild(button);
     ul.appendChild(li);
     inputText.value = '';
-    
+
 })
