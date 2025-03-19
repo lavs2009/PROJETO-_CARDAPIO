@@ -3,7 +3,7 @@ const form = document.querySelector('form');
 const inputText = document.querySelector('input[type="text"]');
 const ul = document.querySelector('ul');
 
-function loadTasks() {
+function loadTasks() { //carregar as tarefas
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     ul.innerHTML = '';
     tasks.forEach((task) => {
@@ -12,7 +12,7 @@ function loadTasks() {
         inputCheckbox.setAttribute('type', 'checkbox');
         inputCheckbox.checked = task.done;
         inputCheckbox.addEventListener('change', (event) => {
-            const liToogle = (event.target.parentElement);
+            const liToogle = event.target.parentElement;
             const spanToogle = liToogle.querySelector('span');
             const done = event.target.checked;
             if (!done) {
@@ -20,28 +20,32 @@ function loadTasks() {
             } else {
                 spanToogle.style.textDecoration = 'line-through';
             }
+            task.done = done;
+            saveTasks();
         })
         const span = document.createElement('span');
-        span.textContent = taskTitle;
+        span.textContent = task.text;
+        if (task.done) {
+            span.textDecoration = 'line-through';
+        }
         const button = document.createElement('button');
         button.textContent = 'Remover';
-        button.addEventListener('click', (event) => {
-            ul.removeChild(event.target.parentElement)
+        button.addEventListener('click', () => {
+           removeTask(task);
         })
         li.appendChild(inputCheckbox);
         li.appendChild(span);
         li.appendChild(button);
         ul.appendChild(li);
-        inputText.value = '';
-
+    
     })
 }
-function saveTasks() { }
+
 function removeTask(taskRemove) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const updateTasks = tasks.filter(task => task.text !== taskRemove.text);//filtra a tarefa a ser removida
     localStorage.setItem('task', JSON.stringify(updateTasks));//atualiza o localStorage e o stringfy converte JSON para string
-    localTasks();
+    loadTasks();
 }
 function saveTasks() {
     const tasks = [];
@@ -61,10 +65,16 @@ function saveTasks() {
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();//impede da página ser recarregada e perde tudo
-    const taskTitle = inputText.value;// taskTitle recebe o que é digitado no input
+    const taskTitle = inputText.value.trim();// taskTitle recebe o que é digitado no input
     if (taskTitle.length < 3) {
         alert('Sua tarefa precisa ter ao menos 3 letras');
         return;
     }
-
-})
+    const newTask = { text: taskTitle, done: false };
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.push(newTask);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    inputText.value = '';
+    loadTasks();
+});
+window.onload = loadTasks;
