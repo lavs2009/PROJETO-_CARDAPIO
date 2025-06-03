@@ -44,9 +44,10 @@ function loadTasks() { //carregar as tarefas
 function removeTask(taskRemove) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const updateTasks = tasks.filter(task => task.text !== taskRemove.text);//filtra a tarefa a ser removida
-    localStorage.setItem('task', JSON.stringify(updateTasks));//atualiza o localStorage e o stringfy converte JSON para string
+    localStorage.setItem('tasks', JSON.stringify(updateTasks));//atualiza o localStorage e o stringfy converte JSON para string
     loadTasks();
 }
+
 function saveTasks() {
     const tasks = [];
     const liElements = document.querySelectorAll('ul li');//seleciona todas ul li
